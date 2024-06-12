@@ -1,0 +1,13 @@
+server {
+    listen 80;
+
+    server_name _;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        add_header Cache-Control no-cache;
+        try_files $uri $uri/ =404;
+    }
+}

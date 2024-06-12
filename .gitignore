@@ -1,0 +1,7 @@
+# Ignorer les fichiers de Terraform
+terraform/.terraform/*
+terraform/.terraform/providers/
+terraform/.terraform/providers/registry.terraform.io/
+terraform/.terraform/providers/registry.terraform.io/hashicorp/
+terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/
+terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/3.105.0/

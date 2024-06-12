@@ -1,0 +1,5 @@
+mariadb_root_password: "root"
+db_name: "RestoProch"
+db_user: "root"
+db_password: "root"
+backup_dir: "/var/backups"

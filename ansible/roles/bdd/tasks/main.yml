@@ -1,0 +1,50 @@
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install and configure MariaDB
+  include_role:
+    name: bertvv.mariadb
+  vars:
+    mariadb_daemon_user: mysql
+    mariadb_daemon_user_uid: false
+    mariadb_root_password: "root"
+    mariadb_databases:
+      - name: RestoProch
+        collation: utf8_general_ci
+    mariadb_users:
+      - name: root
+        password: root
+        priv: "RestoProch.*:ALL"
+
+- name: Ensure proper ownership and permissions for MariaDB directories
+  file:
+    path: "{{ item }}"
+    owner: mysql
+    group: mysql
+    recurse: yes
+  with_items:
+    - /var/lib/mysql
+    - /etc/mysql
+    - /var/log/mysql
+
+- name: Start and enable MariaDB service
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Créer le script de sauvegarde
+  template:
+    src: snapshot_db.sh.j2
+    dest: /usr/local/bin/snapshot_db.sh
+    mode: '0755'
+
+- name: Ajouter une tâche cron pour la sauvegarde
+  cron:
+    name: "Sauvegarde automatique de la base de données"
+    minute: 0
+    hour: "*/12"
+    user: root
+    job: "/usr/local/bin/snapshot_db.sh"

@@ -1,0 +1,67 @@
+---
+# Configuration des serveurs BDD
+- name: Installation du serveur BDD
+  hosts: bdd
+  become: yes
+  roles:
+    - bdd
+
+# Configuration des serveurs FRONTEND
+- name: Installation des serveurs FRONTEND
+  hosts: frontend
+  become: yes
+  roles:
+    - frontend
+
+# Configuration des serveurs BACKEND
+- name: Installation des serveurs BACKEND
+  hosts: backend
+  become: yes
+  roles:
+    - backend
+
+# Configuration de HAProxy sur le Load Balancer FRONTEND
+- name: Configure HAProxy on Frontend Load Balancer  # Nom de la tâche
+  hosts: lb_frontend                                # Spécifie les serveurs ciblés pour le load balancer frontend
+  become: yes                                       # Active les privilèges superutilisateur pour les tâches
+  roles:                                            # Applique le rôle HAProxy de geerlingguy
+    - role: geerlingguy.haproxy
+  vars:                                             # Définit les variables utilisées dans le rôle HAProxy
+    haproxy_frontend_name: 'hafrontend'
+    haproxy_frontend_bind_address: '*'              # Adresse de bind pour HAProxy (écoute sur toutes les adresses)
+    haproxy_frontend_port: 80                       # Port pour le frontend
+    haproxy_frontend_mode: 'http'                   # Mode de fonctionnement HTTP
+    haproxy_backend_name: 'servers'                 # Nom du backend
+    haproxy_backend_mode: 'http'                    # Mode de fonctionnement du backend
+    haproxy_backend_balance_method: 'roundrobin'    # Méthode de balance de charge
+    haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'  # Vérification HTTP du serveur
+  tasks:                                            # Tâches spécifiques à ce playbook
+    - name: Template HAProxy config for frontend    # Nom de la tâche
+      template:                                     # Module Ansible pour templating
+        src: haproxy_frontend.cfg.j2                # Source du template
+        dest: /etc/haproxy/haproxy.cfg              # Destination du fichier de configuration
+      notify:                                       # Déclencheur pour redémarrer HAProxy après les changements
+        - restart haproxy
+
+# Configuration de HAProxy sur le Load Balancer BACKEND
+- name: Configure HAProxy on Backend Load Balancer  # Nom de la tâche
+  hosts: lb_backend                                 # Spécifie les serveurs ciblés pour le load balancer backend
+  become: yes                                       # Active les privilèges superutilisateur pour les tâches
+  roles:                                            # Applique le rôle HAProxy de geerlingguy
+    - role: geerlingguy.haproxy
+  vars:                                             # Définit les variables utilisées dans le rôle HAProxy
+    haproxy_frontend_name: 'hafrontend'
+    haproxy_frontend_bind_address: '*'              # Adresse de bind pour HAProxy (écoute sur toutes les adresses)
+    haproxy_frontend_port: 80                       # Port pour le frontend
+    haproxy_frontend_mode: 'http'                   # Mode de fonctionnement HTTP
+    haproxy_backend_name: 'servers'                 # Nom du backend
+    haproxy_backend_mode: 'http'                    # Mode de fonctionnement du backend
+    haproxy_backend_balance_method: 'roundrobin'    # Méthode de balance de charge
+    haproxy_backend_httpchk: 'HEAD / HTTP/1.1\r\nHost:localhost'  # Vérification HTTP du serveur
+  tasks:                                            # Tâches spécifiques à ce playbook
+    - name: Template HAProxy config for backend     # Nom de la tâche
+      template:                                     # Module Ansible pour templating
+        src: haproxy_backend.cfg.j2                 # Source du template
+        dest: /etc/haproxy/haproxy.cfg              # Destination du fichier de configuration
+      notify:                                       # Déclencheur pour redémarrer HAProxy après les changements
+        - restart haproxy

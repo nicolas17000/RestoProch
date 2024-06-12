@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DATE=$(date +\%Y-\%m-\%d_\%H-\%M-\%S)
+BACKUP_DIR="{{ backup_dir }}"
+DB_NAME="{{ db_name }}"
+DB_USER="{{ db_user }}"
+DB_PASSWORD="{{ db_password }}"
+BACKUP_NAME="$BACKUP_DIR/db_backup_$DATE.sql"
+LOG_FILE="$BACKUP_DIR/backup_log_$DATE.txt"
+
+# Créer le répertoire de sauvegarde s'il n'existe pas
+mkdir -p $BACKUP_DIR
+
+# Exécuter la sauvegarde
+mysqldump -u $DB_USER -p$DB_PASSWORD $DB_NAME > $BACKUP_NAME
+
+# Vérifier le statut de la sauvegarde
+if [ $? -eq 0 ]; then
+    echo "La sauvegarde de la base de données $DB_NAME a réussi." > $LOG_FILE
+    echo "La sauvegarde a été enregistrée sous $BACKUP_NAME" >> $LOG_FILE
+else
+    echo "La sauvegarde de la base de données $DB_NAME a échoué." > $LOG_FILE
+fi
+
+# Supprimer les sauvegardes plus anciennes que 30 jours
+find $BACKUP_DIR -type f -name "db_backup_*.sql" -mtime +30 -exec rm {} \;

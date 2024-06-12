@@ -1,0 +1,13 @@
+- name: Restart SNMPD
+  systemd:
+    name: snmpd
+    state: restarted
+    enabled: yes
+    
+- name: Restart NRPE
+  systemd:
+    name: nagios-nrpe-server
+    state: restarted
+    
+- name: reload ufw
+  command: ufw reload

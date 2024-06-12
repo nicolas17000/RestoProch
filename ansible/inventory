@@ -1,0 +1,17 @@
+[frontend]
+20.73.18.132 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+20.73.18.148 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=2
+[backend]
+20.73.171.191 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+20.73.170.242 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=2
+[supervision]
+20.73.19.21 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+20.73.18.137 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=2
+[lb_frontend]
+20.73.18.235 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+[lb_backend]
+20.73.19.36 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+[bdd]
+20.73.171.55 ansible_ssh_user=adminuser ansible_ssh_private_key_file=~/.ssh/id_rsa server_number=1
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
