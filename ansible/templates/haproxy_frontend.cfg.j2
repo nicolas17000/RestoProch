@@ -1,4 +1,5 @@
 global
+  # Configuration globale des logs et du socket de statistiques
   log /dev/log local0
   log /dev/log local1 notice
   stats socket /var/lib/haproxy/stats level admin
@@ -8,6 +9,7 @@ global
   daemon
 
 defaults
+  # Configuration par défaut pour les logs, le mode et les options
   log global
   mode http
   option httplog
@@ -15,6 +17,7 @@ defaults
   timeout connect 5000
   timeout client 50000
   timeout server 50000
+  # Fichiers d'erreur par défaut
   errorfile 400 /etc/haproxy/errors/400.http
   errorfile 403 /etc/haproxy/errors/403.http
   errorfile 408 /etc/haproxy/errors/408.http
@@ -24,15 +27,19 @@ defaults
   errorfile 504 /etc/haproxy/errors/504.http
 
 frontend {{ haproxy_frontend_name }}
+  # Configuration du frontend avec l'adresse et le port de bind
   bind {{ haproxy_frontend_bind_address }}:{{ haproxy_frontend_port }}
   mode {{ haproxy_frontend_mode }}
+  # Backend par défaut pour ce frontend
   default_backend {{ haproxy_backend_name }}
 
 backend {{ haproxy_backend_name }}
+  # Configuration du backend avec les options et le mode
   mode {{ haproxy_backend_mode }}
   balance leastconn
   option forwardfor
   option httpchk {{ haproxy_backend_httpchk }}
+  # Boucle sur les hôtes du groupe 'frontend' pour les ajouter au backend
   {% for host in groups['frontend'] %}
     server {{ host }} {{ hostvars[host]['inventory_hostname'] }}:80 check
   {% endfor %}

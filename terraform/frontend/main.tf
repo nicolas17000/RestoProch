@@ -1,3 +1,4 @@
+# Crée une ressource d'adresse IP publique nommée "frontend_ip1"
 resource "azurerm_public_ip" "frontend_ip1" {
   name                = "frontendPublicIP1"
   location            = var.location
@@ -5,6 +6,7 @@ resource "azurerm_public_ip" "frontend_ip1" {
   allocation_method   = "Static"
 }
 
+# Crée une ressource d'adresse IP publique nommée "frontend_ip2"
 resource "azurerm_public_ip" "frontend_ip2" {
   name                = "frontendPublicIP2"
   location            = var.location
@@ -12,6 +14,7 @@ resource "azurerm_public_ip" "frontend_ip2" {
   allocation_method   = "Static"
 }
 
+# Crée une interface réseau nommée "frontend_nic1" et la lie à l'adresse IP publique "frontend_ip1"
 resource "azurerm_network_interface" "frontend_nic1" {
   name                = "frontendNIC1"
   location            = var.location
@@ -25,6 +28,7 @@ resource "azurerm_network_interface" "frontend_nic1" {
   }
 }
 
+# Crée une interface réseau nommée "frontend_nic2" et la lie à l'adresse IP publique "frontend_ip2"
 resource "azurerm_network_interface" "frontend_nic2" {
   name                = "frontendNIC2"
   location            = var.location
@@ -38,6 +42,7 @@ resource "azurerm_network_interface" "frontend_nic2" {
   }
 }
 
+# Crée une machine virtuelle nommée "frontend_vm1" et la lie à l'interface réseau "frontend_nic1"
 resource "azurerm_virtual_machine" "frontend_vm1" {
   name                  = "frontendVM1"
   location              = var.location
@@ -70,6 +75,7 @@ resource "azurerm_virtual_machine" "frontend_vm1" {
   }
 }
 
+# Crée une machine virtuelle nommée "frontend_vm2" et la lie à l'interface réseau "frontend_nic2"
 resource "azurerm_virtual_machine" "frontend_vm2" {
   name                  = "frontendVM2"
   location              = var.location
@@ -101,6 +107,8 @@ resource "azurerm_virtual_machine" "frontend_vm2" {
     disable_password_authentication = false
   }
 }
+
+# Crée un groupe de sécurité réseau (NSG) nommé "frontend_nsg" avec des règles pour SSH et HTTP
 resource "azurerm_network_security_group" "frontend_nsg" {
   name                = "frontendNSG"
   location            = var.location

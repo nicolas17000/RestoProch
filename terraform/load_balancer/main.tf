@@ -1,3 +1,4 @@
+# Crée une ressource d'adresse IP publique nommée "lb_ip1"
 resource "azurerm_public_ip" "lb_ip1" {
   name                = "lbPublicIP1"
   location            = var.location
@@ -5,6 +6,7 @@ resource "azurerm_public_ip" "lb_ip1" {
   allocation_method   = "Static"
 }
 
+# Crée une ressource d'adresse IP publique nommée "lb_ip2"
 resource "azurerm_public_ip" "lb_ip2" {
   name                = "lbPublicIP2"
   location            = var.location
@@ -12,6 +14,7 @@ resource "azurerm_public_ip" "lb_ip2" {
   allocation_method   = "Static"
 }
 
+# Crée une interface réseau nommée "lb_nic1" et la lie à l'adresse IP publique "lb_ip1"
 resource "azurerm_network_interface" "lb_nic1" {
   name                = "lbNIC1"
   location            = var.location
@@ -25,6 +28,7 @@ resource "azurerm_network_interface" "lb_nic1" {
   }
 }
 
+# Crée une interface réseau nommée "lb_nic2" et la lie à l'adresse IP publique "lb_ip2"
 resource "azurerm_network_interface" "lb_nic2" {
   name                = "lbNIC2"
   location            = var.location
@@ -38,6 +42,7 @@ resource "azurerm_network_interface" "lb_nic2" {
   }
 }
 
+# Crée une machine virtuelle nommée "lb_vm1" et la lie à l'interface réseau "lb_nic1"
 resource "azurerm_virtual_machine" "lb_vm1" {
   name                  = "lbVM1"
   location              = var.location
@@ -70,6 +75,7 @@ resource "azurerm_virtual_machine" "lb_vm1" {
   }
 }
 
+# Crée une machine virtuelle nommée "lb_vm2" et la lie à l'interface réseau "lb_nic2"
 resource "azurerm_virtual_machine" "lb_vm2" {
   name                  = "lbVM2"
   location              = var.location
@@ -101,6 +107,8 @@ resource "azurerm_virtual_machine" "lb_vm2" {
     disable_password_authentication = false
   }
 }
+
+# Crée un groupe de sécurité réseau (NSG) nommé "lb_nsg" avec des règles pour SSH et HTTP
 resource "azurerm_network_security_group" "lb_nsg" {
   name                = "lbNSG"
   location            = var.location

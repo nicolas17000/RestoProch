@@ -1,13 +1,13 @@
-- name: Restart SNMPD
+- name: Redémarre le service SNMPD et s'assure qu'il est activé au démarrage
   systemd:
     name: snmpd
     state: restarted
     enabled: yes
     
-- name: Restart NRPE
+- name: Redémarre le service NRPE (Nagios Remote Plugin Executor)
   systemd:
     name: nagios-nrpe-server
     state: restarted
     
-- name: reload ufw
+- name: Recharge la configuration du pare-feu UFW
   command: ufw reload

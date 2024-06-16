@@ -1,14 +1,14 @@
-- name: Update and upgrade apt packages
+- name: Met à jour le cache des paquets et effectue une mise à niveau de distribution
   apt:
     update_cache: yes
     upgrade: dist
 
-- name: Install Nginx
+- name: Installe le paquet Nginx
   apt:
     name: nginx
     state: present
 
-- name: Configure Nginx for frontend
+- name: Configure Nginx pour le frontend en utilisant un template
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/sites-available/default
@@ -16,27 +16,27 @@
     group: root
     mode: '0644'
 
-- name: Ensure Nginx is started and enabled
+- name: S'assure que Nginx est démarré et activé au démarrage
   service:
     name: nginx
     state: started
     enabled: yes
 
-- name: Set server number fact
+- name: Définit un fait local avec le numéro du serveur
   set_fact:
     local_server_number: "{{ server_number }}"
 
-- name: Create frontend HTML file
+- name: Crée le fichier HTML du frontend en utilisant un template
   template:
     src: index.html.j2
     dest: /var/www/html/index.html
     
-- name: Recharger Nginx pour appliquer la configuration
+- name: Recharge Nginx pour appliquer la nouvelle configuration
   service:
     name: nginx
     state: reloaded
 
-- name: Install required packages
+- name: Installe les paquets requis et met à jour le cache des paquets
   apt:
     update_cache: yes
     name:
@@ -49,17 +49,17 @@
       - curl
     state: present
 
-- name: Update apt cache after adding repositories
+- name: Met à jour le cache apt après l'ajout de nouveaux dépôts
   apt:
     update_cache: yes
 
-- name: Gather the first IP address from the supervision group
+- name: Récupère la première adresse IP du groupe de supervision
   set_fact:
     supervision_ip: "{{ groups['supervision'][0] }}"
   delegate_to: localhost
   run_once: true
 
-- name: Install SNMP
+- name: Installe les paquets SNMP et SNMPD, et met à jour le cache des paquets
   apt:
     name:
       - snmpd
@@ -67,7 +67,7 @@
     state: present
     update_cache: yes
 
-- name: Configure SNMP
+- name: Configure SNMP avec les paramètres spécifiés
   copy:
     content: |
       agentAddress udp:161
@@ -103,27 +103,27 @@
     mode: '0644'
   notify: Restart SNMPD
 
-- name: Ensure SNMPD is started and enabled
+- name: S'assure que SNMPD est démarré et activé au démarrage
   service:
     name: snmpd
     state: started
     enabled: yes
 
 
-- name: Installation de UFW
+- name: Installe UFW et met à jour le cache des paquets
   apt:
     name: ufw
     state: present
-    update_cache: yes  # Assurez-vous que le cache des paquets est à jour
+    update_cache: yes
 
-- name: Autoriser SSH
+- name: Autorise le port SSH via UFW
   ufw:
     rule: allow
     port: 22
     proto: tcp
     from: "{{ supervision_ip }}"
 
-- name: Configuration des règles UFW pour Centreon
+- name: Configure les règles UFW pour différents services Centreon
   ufw:
     rule: allow
     port: "{{ item.port }}"
@@ -139,13 +139,13 @@
     - { port: '162', proto: 'udp' }  # SNMP traps, si utilisé pour les alertes
     - { port: '161', proto: 'udp' }  # SNMP polling
 
-- name: Activation de UFW
+- name: Active UFW et définit la politique par défaut sur deny
   ufw:
     state: enabled
     default: deny
   notify: reload ufw
 
-- name: Vérification de l'état de UFW
+- name: Vérifie l'état d'UFW en mode verbose
   command: ufw status verbose
   changed_when: false
   register: ufw_status
@@ -156,7 +156,7 @@
 
 
 
-- name: Install NRPE and Nagios plugins
+- name: Installe le serveur NRPE et les plugins Nagios, et met à jour le cache des paquets
   apt:
     name:
       - nagios-nrpe-server
@@ -164,7 +164,7 @@
     state: present
     update_cache: yes
 
-- name: Configure NRPE
+- name: Configure NRPE avec les paramètres spécifiés
   copy:
     content: |
       server_address=0.0.0.0
@@ -181,30 +181,30 @@
     mode: '0644'
   notify: Restart NRPE
 
-- name: Ensure NRPE is started and enabled
+- name: S'assure que NRPE est démarré et activé au démarrage
   systemd:
     name: nagios-nrpe-server
     state: started
     enabled: yes
 
-- name: Ensure SSH is installed
+- name: S'assure que le serveur SSH est installé et met à jour le cache des paquets
   apt:
     name: openssh-server
     state: present
     update_cache: yes
 
-- name: Ensure SSH service is enabled and started
+- name: S'assure que le service SSH est démarré et activé au démarrage
   systemd:
     name: ssh
     state: started
     enabled: yes
 
-- name: Allow SSH through UFW
+- name: Autorise SSH via UFW
   ufw:
     rule: allow
     port: 22
     proto: tcp
 
-- name: Ensure UFW is enabled
+- name: S'assure que UFW est activé
   ufw:
     state: enabled

@@ -1,3 +1,4 @@
+# Crée une ressource d'adresse IP publique nommée "bdd_ip1"
 resource "azurerm_public_ip" "bdd_ip1" {
   name                = "bddPublicIP1"
   location            = var.location
@@ -5,6 +6,7 @@ resource "azurerm_public_ip" "bdd_ip1" {
   allocation_method   = "Static"
 }
 
+# Crée une interface réseau nommée "bdd_nic1" et la lie à l'adresse IP publique "bdd_ip1"
 resource "azurerm_network_interface" "bdd_nic1" {
   name                = "bddNIC1"
   location            = var.location
@@ -18,6 +20,7 @@ resource "azurerm_network_interface" "bdd_nic1" {
   }
 }
 
+# Crée une machine virtuelle nommée "bdd_vm1" et la lie à l'interface réseau "bdd_nic1"
 resource "azurerm_virtual_machine" "bdd_vm1" {
   name                  = "bddVM1"
   location              = var.location
@@ -50,6 +53,7 @@ resource "azurerm_virtual_machine" "bdd_vm1" {
   }
 }
 
+# Crée un groupe de sécurité réseau (NSG) nommé "bdd_nsg" avec des règles pour SSH et HTTP
 resource "azurerm_network_security_group" "bdd_nsg" {
   name                = "bddNSG"
   location            = var.location

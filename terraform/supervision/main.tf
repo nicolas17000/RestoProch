@@ -1,3 +1,4 @@
+# Crée une ressource d'adresse IP publique nommée "supervision_ip1"
 resource "azurerm_public_ip" "supervision_ip1" {
   name                = "supervisionPublicIP1"
   location            = var.location
@@ -5,6 +6,7 @@ resource "azurerm_public_ip" "supervision_ip1" {
   allocation_method   = "Static"
 }
 
+# Crée une ressource d'adresse IP publique nommée "supervision_ip2"
 resource "azurerm_public_ip" "supervision_ip2" {
   name                = "supervisionPublicIP2"
   location            = var.location
@@ -12,6 +14,7 @@ resource "azurerm_public_ip" "supervision_ip2" {
   allocation_method   = "Static"
 }
 
+# Crée une interface réseau nommée "supervision_nic1" et la lie à l'adresse IP publique "supervision_ip1"
 resource "azurerm_network_interface" "supervision_nic1" {
   name                = "supervisionNIC1"
   location            = var.location
@@ -25,6 +28,7 @@ resource "azurerm_network_interface" "supervision_nic1" {
   }
 }
 
+# Crée une interface réseau nommée "supervision_nic2" et la lie à l'adresse IP publique "supervision_ip2"
 resource "azurerm_network_interface" "supervision_nic2" {
   name                = "supervisionNIC2"
   location            = var.location
@@ -38,6 +42,7 @@ resource "azurerm_network_interface" "supervision_nic2" {
   }
 }
 
+# Crée un groupe de sécurité réseau (NSG) nommé "supervision_nsg" avec des règles pour SSH et HTTP
 resource "azurerm_network_security_group" "supervision_nsg" {
   name                = "supervisionNSG"
   location            = var.location
@@ -68,6 +73,7 @@ resource "azurerm_network_security_group" "supervision_nsg" {
   }
 }
 
+# Crée une machine virtuelle nommée "supervision_vm1" et la lie à l'interface réseau "supervision_nic1"
 resource "azurerm_virtual_machine" "supervision_vm1" {
   name                  = "supervisionVM1"
   location              = var.location
@@ -100,6 +106,7 @@ resource "azurerm_virtual_machine" "supervision_vm1" {
   }
 }
 
+# Crée une machine virtuelle nommée "supervision_vm2" et la lie à l'interface réseau "supervision_nic2"
 resource "azurerm_virtual_machine" "supervision_vm2" {
   name                  = "supervisionVM2"
   location              = var.location

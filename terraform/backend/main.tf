@@ -1,3 +1,4 @@
+# Crée une ressource d'adresse IP publique nommée "backend_ip1"
 resource "azurerm_public_ip" "backend_ip1" {
   name                = "backendPublicIP1"
   location            = var.location
@@ -5,6 +6,7 @@ resource "azurerm_public_ip" "backend_ip1" {
   allocation_method   = "Static"
 }
 
+# Crée une ressource d'adresse IP publique nommée "backend_ip2"
 resource "azurerm_public_ip" "backend_ip2" {
   name                = "backendPublicIP2"
   location            = var.location
@@ -12,6 +14,7 @@ resource "azurerm_public_ip" "backend_ip2" {
   allocation_method   = "Static"
 }
 
+# Crée une interface réseau nommée "backend_nic1" et la lie à l'adresse IP publique "backend_ip1"
 resource "azurerm_network_interface" "backend_nic1" {
   name                = "backendNIC1"
   location            = var.location
@@ -25,6 +28,7 @@ resource "azurerm_network_interface" "backend_nic1" {
   }
 }
 
+# Crée une interface réseau nommée "backend_nic2" et la lie à l'adresse IP publique "backend_ip2"
 resource "azurerm_network_interface" "backend_nic2" {
   name                = "backendNIC2"
   location            = var.location
@@ -38,6 +42,7 @@ resource "azurerm_network_interface" "backend_nic2" {
   }
 }
 
+# Crée une machine virtuelle nommée "backend_vm1" et la lie à l'interface réseau "backend_nic1"
 resource "azurerm_virtual_machine" "backend_vm1" {
   name                  = "backendVM1"
   location              = var.location
@@ -70,6 +75,7 @@ resource "azurerm_virtual_machine" "backend_vm1" {
   }
 }
 
+# Crée une machine virtuelle nommée "backend_vm2" et la lie à l'interface réseau "backend_nic2"
 resource "azurerm_virtual_machine" "backend_vm2" {
   name                  = "backendVM2"
   location              = var.location
@@ -102,6 +108,7 @@ resource "azurerm_virtual_machine" "backend_vm2" {
   }
 }
 
+# Crée un groupe de sécurité réseau (NSG) nommé "backend_nsg" avec des règles pour SSH et HTTP
 resource "azurerm_network_security_group" "backend_nsg" {
   name                = "backendNSG"
   location            = var.location
